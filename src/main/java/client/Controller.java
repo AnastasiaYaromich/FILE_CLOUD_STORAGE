@@ -14,6 +14,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import lombok.SneakyThrows;
 import model.*;
@@ -30,6 +31,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -37,15 +39,13 @@ import java.util.stream.Collectors;
 
 public class Controller implements Initializable {
     // Панель клиента.
-    @FXML
-    public TableView<FileInfo> clientFiles;
-    @FXML
-    public TableView<File> serverFiles;
-    @FXML
-    public TextField pathField;
+    @FXML public TableView<FileInfo> clientFiles;
+    @FXML public TableView<File> serverFiles;
+    @FXML public TextField pathField;
 
     private Path baseDir;
-
+    String serverRootPath;
+    private Path serverRootClientPath;
     // Обмен командами.
     private ObjectDecoderInputStream is;
     private ObjectEncoderOutputStream os;
@@ -58,31 +58,21 @@ public class Controller implements Initializable {
     private ImageView imageView;
     private Image image;
 
-    String serverRootPath;
+  //  String serverRootPath;
 
     // Панель сервера.
-    @FXML
-    Label authLabel;
-    @FXML
-    AnchorPane authPanel;
-    @FXML
-    TextField loginField;
-    @FXML
-    PasswordField passwordField;
-    @FXML
-    Button authButton;
-    @FXML
-    Button regButton;
-    @FXML
-    AnchorPane regPanel;
-    @FXML
-    TextField rootRegField;
-    @FXML
-    AnchorPane mainPanel;
-    @FXML
-    TextField loginRegField;
-    @FXML
-    PasswordField passwordRegField;
+    @FXML Label authLabel;
+    @FXML AnchorPane authPanel;
+    @FXML TextField loginField;
+    @FXML PasswordField passwordField;
+    @FXML Button authButton;
+    @FXML Button regButton;
+    @FXML AnchorPane regPanel;
+    @FXML TextField rootRegField;
+    @FXML AnchorPane mainPanel;
+    @FXML TextField loginRegField;
+    @FXML PasswordField passwordRegField;
+    @FXML TextField pathServerField;
 
     @SneakyThrows
     @Override
@@ -245,16 +235,42 @@ public class Controller implements Initializable {
                 if (e.getClickCount() == 2) {
                     FileInfo file = clientFiles.getSelectionModel().getSelectedItem();
                     Path path = baseDir.resolve(file.getFileName());
-                    if (Files.isDirectory(path)) {
-                        path = baseDir.resolve(file.getFileName());
+                    if (file.isDirectory()) {
                         baseDir = path;
                         try {
-                            fillClientView(getClientFiles());
+                           fillCurrentClientView(getCurrentClientFiles(baseDir), baseDir);
                         } catch (IOException ioException) {
                             ioException.printStackTrace();
                         }
                     } else {
                         File selectedFile = new File(path.toString());
+                        try {
+                            Desktop.getDesktop().open(selectedFile);
+                        } catch (IOException ioException) {
+                            ioException.printStackTrace();
+                        }
+                    }
+                }
+            });
+
+            serverFiles.setOnMouseClicked(e -> {
+                if(e.getClickCount() == 2) {
+                    File file = serverFiles.getSelectionModel().getSelectedItem();
+                    System.out.println(serverRootClientPath);
+                    Path pathRoot = serverRootClientPath.resolve(file.getName());
+                    if(Files.isDirectory(pathRoot)) {
+                        System.out.println("Приветики");
+                        serverRootClientPath = pathRoot;
+                        System.out.println("ServerRootClientPath: " + serverRootClientPath);
+                        System.out.println("Pathroot: " + pathRoot);
+                        try {
+                            fillCurrentServerView(getCurrentServerFiles(serverRootClientPath), serverRootClientPath);
+                        } catch (IOException ioException) {
+                            ioException.printStackTrace();
+                        }
+                    } else {
+                        File selectedFile = new File(file.toString());
+                        System.out.println("Это файл: " + selectedFile);
                         try {
                             Desktop.getDesktop().open(selectedFile);
                         } catch (IOException ioException) {
@@ -323,6 +339,8 @@ public class Controller implements Initializable {
                         AuthenticationComplete authenticationComplete = (AuthenticationComplete) msg;
                         serverRootPath = authenticationComplete.getRootUserPath();
                         System.out.println(serverRootPath);
+                        serverRootClientPath = Paths.get(serverRootPath);
+                        serverFiles.getItems().addAll(getServerFiles(serverRootClientPath));
                         authPanel.setVisible(false);
                         mainPanel.setVisible(true);
                         break;
@@ -334,20 +352,30 @@ public class Controller implements Initializable {
     }
 
     private void fillServerView(List<File> list) {
+        pathServerField.setText(Paths.get(serverRootPath).normalize().toAbsolutePath().toString());
         serverFiles.getItems().clear();
         serverFiles.getItems().addAll(list);
     }
 
     private void fillClientView(List<FileInfo> list) {
-        pathField.setText(baseDir.normalize().toAbsolutePath().toString());
+    //    pathField.setText(baseDir.normalize().toAbsolutePath().toString());
         clientFiles.getItems().clear();
         clientFiles.getItems().addAll(list);
     }
 
+
     private List<FileInfo> getClientFiles() throws IOException {
+        pathField.setText(baseDir.normalize().toAbsolutePath().toString());
         return Files.list(baseDir)
                 .map(FileInfo::new)
                 .collect(Collectors.toList());
+    }
+
+    private List<File> getServerFiles(Path path) throws IOException {
+        File file = new File(path.toString());
+        File[] listFiles = file.listFiles();
+        List<File> list = Arrays.asList(listFiles);
+        return list;
     }
 
     private void fillCurrentClientView(List<FileInfo> list, Path path) {
@@ -360,6 +388,19 @@ public class Controller implements Initializable {
         return Files.list(path)
                 .map(FileInfo::new)
                 .collect(Collectors.toList());
+    }
+
+    private void fillCurrentServerView(List<File> list, Path path) {
+        pathServerField.setText(path.normalize().toAbsolutePath().toString());
+        serverFiles.getItems().clear();
+        serverFiles.getItems().addAll(list);
+    }
+
+    private List<File> getCurrentServerFiles(Path path) throws IOException {
+        File file = new File(path.toString());
+        File[] listFiles = file.listFiles();
+        List<File> list = Arrays.asList(listFiles);
+        return list;
     }
 
 
@@ -390,10 +431,11 @@ public class Controller implements Initializable {
             if (e.getClickCount() == 2) {
                 FileInfo file = clientFiles.getSelectionModel().getSelectedItem();
                 Path path = baseDir.resolve(file.getFileName());
-                if (Files.isDirectory(path)) {
+                if (file.isDirectory()) {
                     baseDir = path;
                     try {
-                            fillClientView(getClientFiles());
+                        System.out.println(baseDir);
+                       fillCurrentClientView(getCurrentClientFiles(baseDir), baseDir);
                     } catch (IOException ioException) {
                         ioException.printStackTrace();
                     }
@@ -452,6 +494,40 @@ public class Controller implements Initializable {
     public void backToAuthForm(ActionEvent actionEvent) {
         regPanel.setVisible(false);
         authPanel.setVisible(true);
+    }
+
+
+    public void btnPathServerUp(ActionEvent actionEvent) throws IOException {
+        Path pathUp = Paths.get(pathServerField.getText()).getParent().normalize().toAbsolutePath();
+        serverRootClientPath = Paths.get(serverRootPath).normalize().toAbsolutePath();
+        Path path = Paths.get(serverRootPath).normalize().toAbsolutePath();
+
+        if(pathUp.compareTo(serverRootClientPath) >= 0) {
+            fillCurrentServerView(getCurrentServerFiles(pathUp), pathUp);
+        }
+    }
+
+    public void filesListClicked(MouseEvent mouseEvent) {
+//        if (mouseEvent.getClickCount() == 2) {
+//            FileInfo file = clientFiles.getSelectionModel().getSelectedItem();
+//            Path path = baseDir.resolve(file.getFileName());
+//            if (file.isDirectory()) {
+//                baseDir = path;
+//                try {
+//                    fillClientView(getClientFiles());
+//                } catch (IOException ioException) {
+//                    ioException.printStackTrace();
+//                }
+//            } else {
+//                File selectedFile = new File(path.toString());
+//                try {
+//                    Desktop.getDesktop().open(selectedFile);
+//                } catch (IOException exception) {
+//                    exception.printStackTrace();
+//                }
+//            }
+//        }
+//    }
     }
 }
 
