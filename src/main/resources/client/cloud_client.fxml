@@ -39,8 +39,8 @@
             <MenuItem onAction="#exit" text="Exit" />
          </Menu>
               </MenuBar>
-       <TableView onMouseClicked="#filesListClicked"  fx:id="clientFiles" layoutX="6.0" layoutY="74.0" prefHeight="462.0" prefWidth="361.0" styleClass="background" stylesheets="@DarkTheme.css" />
-       <TableView  fx:id="serverFiles" layoutX="434.0" layoutY="74.0" prefHeight="462.0" prefWidth="361.0" styleClass="background" stylesheets="@DarkTheme.css" />
+       <TableView  fx:id="clientFiles" layoutX="6.0" layoutY="74.0" prefHeight="462.0" prefWidth="361.0" styleClass="background" stylesheets="@DarkTheme.css" />
+       <TableView   fx:id="serverFiles" layoutX="434.0" layoutY="74.0" prefHeight="462.0" prefWidth="361.0" styleClass="background" stylesheets="@DarkTheme.css" />
       <Button fx:id="btnUp" ellipsisString="--&gt;" layoutX="372.0" layoutY="269.0" mnemonicParsing="false" onAction="#upload" prefHeight="15.0" prefWidth="38.0" styleClass="background" stylesheets="@DarkTheme.css" text="&gt;" />
       <Button fx:id="btnDown" ellipsisString="&lt;--" layoutX="372.0" layoutY="305.0" mnemonicParsing="false" onAction="#download" prefHeight="13.0" prefWidth="43.0" styleClass="background" stylesheets="@DarkTheme.css" text="&lt;" />
       <Label fx:id="serverLabel" layoutX="475.0" layoutY="538.0" prefHeight="17.0" prefWidth="237.0" stylesheets="@DarkTheme.css" text="                           ServerFiles" textAlignment="CENTER" />

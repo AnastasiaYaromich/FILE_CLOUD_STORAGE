@@ -18,7 +18,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import lombok.SneakyThrows;
 import model.*;
-
 import java.awt.*;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -57,8 +56,6 @@ public class Controller implements Initializable {
     // Иконки папок и файлов.
     private ImageView imageView;
     private Image image;
-
-  //  String serverRootPath;
 
     // Панель сервера.
     @FXML Label authLabel;
@@ -222,7 +219,6 @@ public class Controller implements Initializable {
             };
         });
         serverFiles.getColumns().add(dateServColumn);
-
         sizeColumn.setSortable(true);
         sizeColumn.setSortType(TableColumn.SortType.DESCENDING);
         clientFiles.getSortOrder().add(sizeColumn);
@@ -232,53 +228,51 @@ public class Controller implements Initializable {
             baseDir = Paths.get(System.getProperty("user.home"));
             clientFiles.getItems().addAll(getClientFiles());
             clientFiles.setOnMouseClicked(e -> {
-                if (e.getClickCount() == 2) {
-                    FileInfo file = clientFiles.getSelectionModel().getSelectedItem();
-                    Path path = baseDir.resolve(file.getFileName());
-                    if (file.isDirectory()) {
-                        baseDir = path;
-                        try {
-                           fillCurrentClientView(getCurrentClientFiles(baseDir), baseDir);
-                        } catch (IOException ioException) {
-                            ioException.printStackTrace();
+                        if (e.getClickCount() == 2) {
+                            FileInfo file = clientFiles.getSelectionModel().getSelectedItem();
+                            Path path = baseDir.resolve(file.getFileName());
+                            if (file.isDirectory()) {
+                                baseDir = path;
+                                try {
+                                    fillClientView(getClientFiles());
+                                } catch (IOException ioException) {
+                                    ioException.printStackTrace();
+                                }
+                            } else {
+                                // ВОЗНИКЛА ПРОБЛЕМА С ОТКРЫТИЕМ ФАЙЛА НА СТОРОНЕ КЛИЕНТА.
+//                                File selectedFile = new File(file.getFileName());
+//                                try {
+//                                    Desktop.getDesktop().open(selectedFile);
+//                                } catch (IOException ioException) {
+//                                    ioException.printStackTrace();
+//                                }
+                            }
                         }
-                    } else {
-                        File selectedFile = new File(path.toString());
-                        try {
-                            Desktop.getDesktop().open(selectedFile);
-                        } catch (IOException ioException) {
-                            ioException.printStackTrace();
-                        }
-                    }
-                }
-            });
+                    });
 
-            serverFiles.setOnMouseClicked(e -> {
-                if(e.getClickCount() == 2) {
-                    File file = serverFiles.getSelectionModel().getSelectedItem();
-                    System.out.println(serverRootClientPath);
-                    Path pathRoot = serverRootClientPath.resolve(file.getName());
-                    if(Files.isDirectory(pathRoot)) {
-                        System.out.println("Приветики");
-                        serverRootClientPath = pathRoot;
-                        System.out.println("ServerRootClientPath: " + serverRootClientPath);
-                        System.out.println("Pathroot: " + pathRoot);
-                        try {
-                            fillCurrentServerView(getCurrentServerFiles(serverRootClientPath), serverRootClientPath);
-                        } catch (IOException ioException) {
-                            ioException.printStackTrace();
-                        }
-                    } else {
-                        File selectedFile = new File(file.toString());
-                        System.out.println("Это файл: " + selectedFile);
-                        try {
-                            Desktop.getDesktop().open(selectedFile);
-                        } catch (IOException ioException) {
-                            ioException.printStackTrace();
-                        }
-                    }
-                }
-            });
+                        serverFiles.setOnMouseClicked(e -> {
+                            if (e.getClickCount() == 2) {
+                                File file = serverFiles.getSelectionModel().getSelectedItem();
+                                System.out.println(serverRootClientPath);
+                                Path pathRoot = serverRootClientPath.resolve(file.getName());
+                                if (Files.isDirectory(pathRoot)) {
+                                    serverRootClientPath = pathRoot;
+                                    try {
+                                        fillServerView(getServerFiles(serverRootClientPath));
+                                    } catch (IOException ioException) {
+                                        ioException.printStackTrace();
+                                    }
+                                } else {
+                                    File selectedFile = new File(file.toString());
+                                    try {
+                                        Desktop.getDesktop().open(selectedFile);
+                                    } catch (IOException ioException) {
+                                        ioException.printStackTrace();
+                                    }
+                                }
+                            }
+                        });
+
 
             Socket socket = new Socket("localhost", 8174);
             os = new ObjectEncoderOutputStream(socket.getOutputStream());
@@ -290,7 +284,6 @@ public class Controller implements Initializable {
             e.printStackTrace();
         }
     }
-
 
     private void read() {
         try {
@@ -310,6 +303,7 @@ public class Controller implements Initializable {
                         // Обновляем список клиентских файлов.
                         Platform.runLater(() -> {
                             try {
+                              //  fillServerView(getServerFiles(serverRootClientPath));
                                 fillClientView(getClientFiles());
                             } catch (IOException e) {
                                 e.printStackTrace();
@@ -352,20 +346,19 @@ public class Controller implements Initializable {
     }
 
     private void fillServerView(List<File> list) {
-        pathServerField.setText(Paths.get(serverRootPath).normalize().toAbsolutePath().toString());
+        pathServerField.setText(serverRootClientPath.toString());
         serverFiles.getItems().clear();
         serverFiles.getItems().addAll(list);
     }
 
     private void fillClientView(List<FileInfo> list) {
-    //    pathField.setText(baseDir.normalize().toAbsolutePath().toString());
+        pathField.setText(baseDir.toString());
         clientFiles.getItems().clear();
         clientFiles.getItems().addAll(list);
     }
 
-
     private List<FileInfo> getClientFiles() throws IOException {
-        pathField.setText(baseDir.normalize().toAbsolutePath().toString());
+        pathField.setText(baseDir.toString());
         return Files.list(baseDir)
                 .map(FileInfo::new)
                 .collect(Collectors.toList());
@@ -377,32 +370,6 @@ public class Controller implements Initializable {
         List<File> list = Arrays.asList(listFiles);
         return list;
     }
-
-    private void fillCurrentClientView(List<FileInfo> list, Path path) {
-        pathField.setText(path.normalize().toAbsolutePath().toString());
-        clientFiles.getItems().clear();
-        clientFiles.getItems().addAll(list);
-    }
-
-    private List<FileInfo> getCurrentClientFiles(Path path) throws IOException {
-        return Files.list(path)
-                .map(FileInfo::new)
-                .collect(Collectors.toList());
-    }
-
-    private void fillCurrentServerView(List<File> list, Path path) {
-        pathServerField.setText(path.normalize().toAbsolutePath().toString());
-        serverFiles.getItems().clear();
-        serverFiles.getItems().addAll(list);
-    }
-
-    private List<File> getCurrentServerFiles(Path path) throws IOException {
-        File file = new File(path.toString());
-        File[] listFiles = file.listFiles();
-        List<File> list = Arrays.asList(listFiles);
-        return list;
-    }
-
 
     public void upload(ActionEvent actionEvent) throws IOException {
         FileInfo file = clientFiles.getSelectionModel().getSelectedItem();
@@ -424,31 +391,18 @@ public class Controller implements Initializable {
     public void btnPathUp(ActionEvent actionEvent) throws IOException {
         Path pathUp = Paths.get(pathField.getText()).getParent();
         if (pathUp.compareTo(Paths.get(System.getProperty("user.home"))) >= 0) {
-            fillCurrentClientView(getCurrentClientFiles(pathUp), pathUp);
+            baseDir = pathUp;
+            fillClientView(getClientFiles());
         }
-        baseDir = Paths.get(System.getProperty("user.home"));
-        clientFiles.setOnMouseClicked(e -> {
-            if (e.getClickCount() == 2) {
-                FileInfo file = clientFiles.getSelectionModel().getSelectedItem();
-                Path path = baseDir.resolve(file.getFileName());
-                if (file.isDirectory()) {
-                    baseDir = path;
-                    try {
-                        System.out.println(baseDir);
-                       fillCurrentClientView(getCurrentClientFiles(baseDir), baseDir);
-                    } catch (IOException ioException) {
-                        ioException.printStackTrace();
-                    }
-                } else {
-                    File selectedFile = new File(path.toString());
-                    try {
-                        Desktop.getDesktop().open(selectedFile);
-                    } catch (IOException exception) {
-                        exception.printStackTrace();
-                    }
-                }
-            }
-        });
+    }
+
+    public void btnPathServerUp(ActionEvent actionEvent) throws IOException {
+        Path pathUp = Paths.get(pathServerField.getText()).getParent();
+        Path path = Paths.get(serverRootPath);
+        if(pathUp.compareTo(path) >= 0) {
+            serverRootClientPath = pathUp;
+            fillServerView(getServerFiles(serverRootClientPath));
+        }
     }
 
     public void deleteAction(ActionEvent actionEvent) throws IOException {
@@ -456,7 +410,6 @@ public class Controller implements Initializable {
         if (!fileInfo.isDirectory()) {
             Files.delete(baseDir.resolve(fileInfo.getFileName()));
         }
-        fillClientView(getClientFiles());
                 }
 
     public void tryToAuth(ActionEvent actionEvent) {
@@ -494,40 +447,6 @@ public class Controller implements Initializable {
     public void backToAuthForm(ActionEvent actionEvent) {
         regPanel.setVisible(false);
         authPanel.setVisible(true);
-    }
-
-
-    public void btnPathServerUp(ActionEvent actionEvent) throws IOException {
-        Path pathUp = Paths.get(pathServerField.getText()).getParent().normalize().toAbsolutePath();
-        serverRootClientPath = Paths.get(serverRootPath).normalize().toAbsolutePath();
-        Path path = Paths.get(serverRootPath).normalize().toAbsolutePath();
-
-        if(pathUp.compareTo(serverRootClientPath) >= 0) {
-            fillCurrentServerView(getCurrentServerFiles(pathUp), pathUp);
-        }
-    }
-
-    public void filesListClicked(MouseEvent mouseEvent) {
-//        if (mouseEvent.getClickCount() == 2) {
-//            FileInfo file = clientFiles.getSelectionModel().getSelectedItem();
-//            Path path = baseDir.resolve(file.getFileName());
-//            if (file.isDirectory()) {
-//                baseDir = path;
-//                try {
-//                    fillClientView(getClientFiles());
-//                } catch (IOException ioException) {
-//                    ioException.printStackTrace();
-//                }
-//            } else {
-//                File selectedFile = new File(path.toString());
-//                try {
-//                    Desktop.getDesktop().open(selectedFile);
-//                } catch (IOException exception) {
-//                    exception.printStackTrace();
-//                }
-//            }
-//        }
-//    }
     }
 }
 
