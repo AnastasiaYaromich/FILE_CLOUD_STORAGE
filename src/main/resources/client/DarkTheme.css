@@ -1,224 +1,321 @@
-.background {
-    -fx-background-image: url("img2.jpg");
-}
+ #mainPanel {
+      -fx-background-image: url("img2.jpg");
+ }
 
-#mainPanel {
-  -fx-background-image: url("img2.jpg");
-}
-
-
-.label {
-    -fx-font-size: 11pt;
-    -fx-font-family: "Segoe UI Semibold";
-    -fx-text-fill: #696969;
-    -fx-opacity: 0.6;
-}
-
-#clientLabel {
--fx-font-size: 10pt;
-    -fx-font-family: "Segoe UI Semibold";
-    -fx-text-fill: #696969;
-    -fx-opacity: 0.6;
-}
-
-#serverLabel {
--fx-font-size: 10pt;
-    -fx-font-family: "Segoe UI Semibold";
-    -fx-text-fill: #696969;
-    -fx-opacity: 0.6;
-}
-
-#authLabel {
-  -fx-font-family: "URW Chancery L", cursive;
-   -fx-font-size: 20pt;
-}
-
-#regLabel {
- -fx-font-family: "URW Chancery L", cursive;
-   -fx-font-size: 20pt;
-}
-
-#authPanel {
-  -fx-background-image: url("img3.jpg");
-}
-
-#regPanel {
-  -fx-background-image: url("img3.jpg");
-}
-
-#btnUp {
-    -fx-padding: 5 22 5 22;
-     -fx-border-color: #C0C0C0;
-     -fx-border-width: 1;
-     -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
-     -fx-font-size: 8pt;
-     -fx-text-fill: #696969;
-      -fx-border-radius: 15px;
-          -fx-background-radius: 15;
-            -fx-background-color: #DCDCDC;
-}
-
-
-#authButton {
-  -fx-padding: 5 22 5 22;
-     -fx-border-color: #C0C0C0;
-     -fx-border-width: 1;
-     -fx-font-family: "Segoe UI Semibold", Helvetica, Arial, sans-serif;
-     -fx-font-size: 8pt;
-     -fx-text-fill: #696969;
-      -fx-border-radius: 15px;
-          -fx-background-radius: 15;
-            -fx-background-color: #DCDCDC;
-}
-
-#regButton {
-  -fx-padding: 5 22 5 22;
-     -fx-border-color: #C0C0C0;
-     -fx-border-width: 1;
-     -fx-font-family: "Segoe UI Semibold", Helvetica, Arial, sans-serif;
-     -fx-font-size: 8pt;
-     -fx-text-fill: #696969;
-      -fx-border-radius: 15px;
-          -fx-background-radius: 15;
-            -fx-background-color: #DCDCDC;
-}
-
-#registerButton {
-  -fx-padding: 5 22 5 22;
-     -fx-border-color: #C0C0C0;
-     -fx-border-width: 1;
-     -fx-font-family: "Segoe UI Semibold", Helvetica, Arial, sans-serif;
-     -fx-font-size: 8pt;
-     -fx-text-fill: #696969;
-      -fx-border-radius: 15px;
-          -fx-background-radius: 15;
-            -fx-background-color: #DCDCDC;
-}
-
-#backToAuthForm {
-  -fx-padding: 5 22 5 22;
-     -fx-border-color: #C0C0C0;
-     -fx-border-width: 1;
-     -fx-font-family: "Segoe UI Semibold", Helvetica, Arial, sans-serif;
-     -fx-font-size: 8pt;
-     -fx-text-fill: #696969;
-      -fx-border-radius: 15px;
-          -fx-background-radius: 15;
-            -fx-background-color: #DCDCDC;
-}
-
-#regButton:hover {
-    	-fx-background-color: rgb(143, 158, 117);
-}
-
-
-#registerButton:hover {
-	-fx-background-color: rgb(143, 158, 117);
-}
-
-#delete {
-    -fx-border-color: #C0C0C0;
-      -fx-border-width: 1;
-      -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+ .label {
       -fx-font-size: 10pt;
+      -fx-font-family: "Segoe UI Semibold";
       -fx-text-fill: #696969;
-             -fx-background-color: #DCDCDC;
-                   -fx-border-radius: 5px;
-                          -fx-background-radius: 5;
-
-}
-
- #exit {
-   -fx-border-color: #C0C0C0;
-       -fx-border-width: 1;
-       -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
-       -fx-font-size: 10pt;
-       -fx-text-fill: #696969;
-              -fx-background-color: #DCDCDC;
-                    -fx-border-radius: 5px;
-                           -fx-background-radius: 5;
+      -fx-opacity: 0.6;
  }
 
-  #backToAuthPanel {
-     -fx-border-color: #C0C0C0;
-         -fx-border-width: 1;
-         -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
-         -fx-font-size: 10pt;
-         -fx-text-fill: #696969;
-                -fx-background-color: #DCDCDC;
-                      -fx-border-radius: 5px;
-                             -fx-background-radius: 5;
-  }
-
-#btnDown {
-    -fx-padding: 5 22 5 22;
-     -fx-border-color: #C0C0C0;
-     -fx-border-width: 1;
-     -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
-     -fx-font-size: 8pt;
-     -fx-text-fill: #696969;
-      -fx-border-radius: 15px;
-          -fx-background-radius: 15;
-            -fx-background-color: #DCDCDC;
- }
-
- #menu {
- -fx-border-color: #C0C0C0;
-     -fx-border-width: 1;
-     -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
-     -fx-font-size: 8pt;
+ #clientLabel {
+      -fx-font-size: 10pt;
+      -fx-font-family: "Segoe UI Semibold";
       -fx-text-fill: #696969;
+      -fx-opacity: 0.6;
  }
 
- #back{
+ #serverLabel {
+      -fx-font-size: 10pt;
+      -fx-font-family: "Segoe UI Semibold";
+      -fx-text-fill: #696969;
+      -fx-opacity: 0.6;
+ }
+
+ #pathClientField {
+      -fx-background-image: url("img2.jpg");
+ }
+
+ #pathServerField {
+      -fx-background-image: url("img2.jpg");
+ }
+
+ .button:focused {
+      -fx-focus-color: -fx-control-inner-background ;
+      -fx-faint-focus-color: -fx-control-inner-background ;
+ }
+
+ #backUpClient {
       -fx-border-color: #C0C0C0;
+      -fx-outline: none;
       -fx-border-width: 1;
       -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
       -fx-font-size: 10pt;
       -fx-text-fill: #696969;
-             -fx-background-color: #DCDCDC;
-                   -fx-border-radius: 5px;
-                          -fx-background-radius: 5;
+      -fx-border-radius: 5px;
+      -fx-background-radius: 5;
  }
 
- #backServer {
+ #backUpServer {
        -fx-border-color: #C0C0C0;
        -fx-border-width: 1;
        -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
        -fx-font-size: 10pt;
        -fx-text-fill: #696969;
-              -fx-background-color: #DCDCDC;
-                    -fx-border-radius: 5px;
-                           -fx-background-radius: 5;
+       -fx-border-radius: 5px;
+       -fx-background-radius: 5;
+       -fx-box-shadow:none;
  }
 
+ #btnUp {
+      -fx-padding: 5 22 5 22;
+      -fx-border-color: #C0C0C0;
+      -fx-border-width: 1;
+      -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+      -fx-font-size: 8pt;
+      -fx-text-fill: #696969;
+      -fx-border-radius: 15px;
+      -fx-background-radius: 15;
+      -fx-outline: none;
+ }
+
+ #btnDown {
+     -fx-padding: 5 22 5 22;
+      -fx-border-color: #C0C0C0;
+      -fx-border-width: 1;
+      -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+      -fx-font-size: 8pt;
+      -fx-text-fill: #696969;
+      -fx-border-radius: 15px;
+      -fx-background-radius: 15;
+      -fx-outline: none;
+ }
+
+ #btnUp:hover {
+      -fx-background-color: rgb(161, 214, 164);
+ }
+
+ #delete {
+      -fx-border-color: #C0C0C0;
+      -fx-border-width: 1;
+      -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+      -fx-font-size: 10pt;
+      -fx-text-fill: #696969;
+      -fx-border-radius: 5px;
+      -fx-background-radius: 5;
+      -fx-outline: none;
+ }
+
+ #exit {
+       -fx-border-color: #C0C0C0;
+       -fx-border-width: 1;
+       -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+       -fx-font-size: 10pt;
+       -fx-text-fill: #696969;
+       -fx-border-radius: 5px;
+       -fx-background-radius: 5;
+       -fx-outline: none;
+ }
+
+ #backToAuthPanel {
+       -fx-border-color: #C0C0C0;
+       -fx-border-width: 1;
+       -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+       -fx-font-size: 10pt;
+       -fx-text-fill: #696969;
+       -fx-border-radius: 5px;
+       -fx-background-radius: 5;
+       -fx-outline: none;
+ }
+
+ .menu-bar {
+       -fx-border-color: #C0C0C0;
+       -fx-border-width: 1;
+       -fx-text-fill: #696969;
+ }
+
+ .menu-bar .label {
+       -fx-font-size: 11pt;
+       -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+       -fx-text-fill: #696969;
+ }
+
+ .menu-bar .menu-button:hover, .menu-bar .menu-button:focused, .menu-bar .menu-button:showing {
+       -fx-background-color: rgb(169, 217, 171);
+       -fx-text-fill: #696969;
+ }
+
+ .menu-item {
+       -fx-padding: 0.0em 10.0em 0.0em 1.0em;
+       -fx-background: rgb(169, 217, 171);
+       -fx-text-fill: #696969;
+ }
+
+ .menu-item .label{
+       -fx-font-size: 10pt;
+       -fx-text-fill: #696969;
+ }
+
+ .menu-item .label:hover{
+       -fx-font-size: 10pt;
+       -fx-background: black ;
+       -fx-text-fill: white;
+ }
+
+ #authLabel {
+        -fx-font-family: "URW Chancery L", cursive;
+        -fx-font-size: 20pt;
+ }
+
+ #infoLabel {
+        -fx-font-size: 11pt;
+        -fx-font-family: "Segoe UI Semibold";
+        -fx-text-fill: #696969;
+        -fx-opacity: 0.6;
+ }
+
+ #loginField {
+        -fx-opacity: 0.7;
+        -fx-border-color: none;
+        -fx-background-color: #DCDCDC;
+        -fx-border-width: 0;
+ }
+
+ #passwordField {
+         -fx-opacity: 0.7;
+         -fx-border-color: none;
+         -fx-background-color: #DCDCDC;
+         -fx-border-width: 0;
+ }
+
+ #authButton {
+        -fx-padding: 5 22 5 22;
+        -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+        -fx-font-size: 9pt;
+        -fx-text-fill: #696969;
+        -fx-background-radius: 15;
+        -fx-opacity: 0.8;
+ }
+
+ #authButton:focused {
+         -fx-background-color: linear-gradient(to bottom, derive(-fx-text-box-border, -10%), -fx-text-box-border),
+         linear-gradient(from 0px 0px to 0px 5px, derive(-fx-control-inner-background, -9%), -fx-control-inner-background);
+ }
+
+ #regButton {
+        -fx-padding: 5 22 5 22;
+        -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+        -fx-font-size: 9pt;
+        -fx-text-fill: #696969;
+        -fx-background-radius: 15;
+        -fx-opacity: 0.8;
+ }
+
+ #regButton:focused {
+         -fx-background-color: linear-gradient(to bottom, derive(-fx-text-box-border, -10%), -fx-text-box-border),
+         linear-gradient(from 0px 0px to 0px 5px, derive(-fx-control-inner-background, -9%), -fx-control-inner-background);
+ }
+
+ #regButton:hover {
+     	-fx-background-color: rgb(143, 158, 117);
+ }
+
+ #regLabel {
+        -fx-font-family: "URW Chancery L", cursive;
+        -fx-font-size: 20pt;
+ }
+
+ #infoRegLabel {
+        -fx-font-size: 11pt;
+        -fx-font-family: "Segoe UI Semibold";
+        -fx-text-fill: #696969;
+        -fx-opacity: 0.6;
+ }
+
+ #authPanel {
+        -fx-background-image: url("img3.jpg");
+ }
+
+ #regPanel {
+        -fx-background-image: url("img3.jpg");
+ }
+
+ #loginRegField {
+        -fx-opacity: 0.7;
+        -fx-border-color: none;
+        -fx-background-color: #DCDCDC;
+        -fx-border-width: 0;
+ }
+
+ #passwordRegField {
+        -fx-opacity: 0.7;
+        -fx-border-color: none;
+        -fx-background-color: #DCDCDC;
+        -fx-border-width: 0;
+ }
+
+ #registerButton {
+        -fx-padding: 5 22 5 22;
+        -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+        -fx-font-size: 9pt;
+        -fx-text-fill: #696969;
+        -fx-background-radius: 15;
+        -fx-opacity: 0.8;
+ }
+
+ #registerButton:focused {
+         -fx-background-color: linear-gradient(to bottom, derive(-fx-text-box-border, -10%), -fx-text-box-border),
+         linear-gradient(from 0px 0px to 0px 5px, derive(-fx-control-inner-background, -9%), -fx-control-inner-background);
+ }
+
+ #registerButton:hover {
+ 	-fx-background-color: rgb(143, 158, 117);
+ }
+
+ #backAuthFormButton {
+         -fx-padding: 5 22 5 22;
+         -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+         -fx-font-size: 9pt;
+         -fx-text-fill: #696969;
+         -fx-background-radius: 15;
+         -fx-opacity: 0.8;
+ }
+
+ #backAuthFormButton:focused {
+          -fx-background-color: linear-gradient(to bottom, derive(-fx-text-box-border, -10%), -fx-text-box-border),
+          linear-gradient(from 0px 0px to 0px 5px, derive(-fx-control-inner-background, -9%), -fx-control-inner-background);
+ }
 
  .text-field {
-  -fx-border-color: #C0C0C0;
-   -fx-background-color: #DCDCDC;
-     -fx-border-width: 1;
-     -fx-opacity: 1.0;
-     -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
-     -fx-font-size: 10pt;
-     -fx-text-fill: #696969;
-         -fx-border-radius: 5px;
-             -fx-background-radius: 5;
+         -fx-border-color: #C0C0C0;
+            -fx-background-color: #DCDCDC;
+              -fx-border-width: 1;
+              -fx-opacity: 1.0;
+              -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+              -fx-font-size: 10pt;
+              -fx-text-fill: #696969;
+                  -fx-border-radius: 5px;
+                      -fx-background-radius: 5;
  }
 
-.table-view {
- -fx-border-color: #C0C0C0;
-    -fx-border-width: 1;
-    -fx-background-radius: 5;
-    -fx-opacity: 0.6;
-    -fx-background-color: #DCDCDC;
-    -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
-    -fx-font-size: 8pt;
-    -fx-text-fill: #696969;
-    -fx-border-radius: 5px;
-}
+ .table-view {
+          -fx-border-color: #C0C0C0;
+          -fx-border-width: 1;
+          -fx-background-radius: 5;
+          -fx-opacity: 0.6;
+          -fx-background-color: #DCDCDC;
+          -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+          -fx-font-size: 8pt;
+          -fx-text-fill: #696969;
+          -fx-border-radius: 5px;
+ }
 
  .table-column {
-  -fx-alignment: CENTER-LEFT;
-}
+          -fx-alignment: CENTER-LEFT;
+ }
 
-}
+ .table-row-cell:filled:selected {
+          -fx-background-color: #DCDCDC;
+          -fx-text-fill: #696969;
+          -fx-border-color: #C0C0C0;
+          -fx-border-insets: 0 -1 0 -1;
+          -fx-background-radius: 1;
+          -fx-table-cell-border-color: transparent;
+ }
+
+ .table-view .table-cell{
+     -fx-text-fill: #696969;
+ }
+
+ }

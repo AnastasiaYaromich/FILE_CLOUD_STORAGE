@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.URL;
+import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -40,7 +41,7 @@ public class Controller implements Initializable {
     // Панель клиента.
     @FXML public TableView<FileInfo> clientFiles;
     @FXML public TableView<File> serverFiles;
-    @FXML public TextField pathField;
+    @FXML public TextField pathClientField;
 
     private Path baseDir;
     String serverRootPath;
@@ -352,13 +353,13 @@ public class Controller implements Initializable {
     }
 
     private void fillClientView(List<FileInfo> list) {
-        pathField.setText(baseDir.toString());
+        pathClientField.setText(baseDir.toString());
         clientFiles.getItems().clear();
         clientFiles.getItems().addAll(list);
     }
 
     private List<FileInfo> getClientFiles() throws IOException {
-        pathField.setText(baseDir.toString());
+        pathClientField.setText(baseDir.toString());
         return Files.list(baseDir)
                 .map(FileInfo::new)
                 .collect(Collectors.toList());
@@ -389,7 +390,7 @@ public class Controller implements Initializable {
     }
 
     public void btnPathUp(ActionEvent actionEvent) throws IOException {
-        Path pathUp = Paths.get(pathField.getText()).getParent();
+        Path pathUp = Paths.get(pathClientField.getText()).getParent();
         if (pathUp.compareTo(Paths.get(System.getProperty("user.home"))) >= 0) {
             baseDir = pathUp;
             fillClientView(getClientFiles());
@@ -410,6 +411,7 @@ public class Controller implements Initializable {
         if (!fileInfo.isDirectory()) {
             Files.delete(baseDir.resolve(fileInfo.getFileName()));
         }
+        fillClientView(getClientFiles());
                 }
 
     public void tryToAuth(ActionEvent actionEvent) {
