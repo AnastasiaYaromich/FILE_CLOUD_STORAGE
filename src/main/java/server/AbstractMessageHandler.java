@@ -58,7 +58,6 @@ public class AbstractMessageHandler extends SimpleChannelInboundHandler<Abstract
                 if(AuthService.checkAccount(addAccount.getLogin()) == null) {
                     // Если клиент не зарегистирован создаем для него корневую
                     // директорию.
-                    System.out.println("Приветики");
                     userRootPath = Paths.get(currentPath + "/" + addAccount.getLogin());
               //      System.out.println(userRootPath);
                     // Добавляем аккаунт клиента в базу данных.
@@ -76,18 +75,30 @@ public class AbstractMessageHandler extends SimpleChannelInboundHandler<Abstract
                     ctx.writeAndFlush(new UserInfo("Account already exist"));
                 }
                 break;
-            // Если сообщение клиента является запросом файла -->
+                // Если сообщение клиента является отправкой его текущей директории на сервере
+            case PATH_TO:
+                PathTo path = (PathTo) message;
+                // Изменяем userRootPath
+                userRootPath = Paths.get(path.getPathTo());
             case FILE_REQUEST:
                 FileRequest req = (FileRequest) message;
                 // Отправляем клиенту запрашиваемый файл.
                 ctx.writeAndFlush(new FileMessage(userRootPath.resolve(req.getFileName())));
+                break;
+                // Если сообщение клиента является просьбой удалить файл -->
+            case DELETE_REQUEST:
+                DeleteRequest del = (DeleteRequest) message;
+                // Удаляем файл.
+                Files.delete(userRootPath.resolve(del.getFileName()));
+                // Возвращаем клиенту обновленный список файлов на сервере.
+                ctx.writeAndFlush(new FilesList(userRootPath));
                 break;
                 // Если сообщение клиента является посылкой файла -->
             case FILE_MESSAGE:
                 FileMessage fileMessage = (FileMessage) message;
                 // Записываем файл на сервер.
                 Files.write(userRootPath.resolve(fileMessage.getFileName()), fileMessage.getBytes());
-                // Возвращаем клиент обновленный список файлов на сервере.
+                // Возвращаем клиенту обновленный список файлов на сервере.
                 ctx.writeAndFlush(new FilesList(userRootPath));
                 break;
         }

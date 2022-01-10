@@ -35,10 +35,16 @@
 
     <AnchorPane prefHeight="600.0" prefWidth="800.0"  fx:id="mainPanel" visible="false">
     <MenuBar fx:id="menuBar" prefHeight="28.0" prefWidth="800.0">
-         <Menu fx:id="menuFile" text="File">
+         <Menu fx:id="menuFile" text="_File">
              <items>
-                 <MenuItem mnemonicParsing="false" text="New" />
-                 <MenuItem mnemonicParsing="false" text="Open…" />
+                 <Menu fx:id="createNew" mnemonicParsing="false" text="New">
+                     <items>
+                         <MenuItem mnemonicParsing="false" text="Folder on client"/>
+                         <MenuItem mnemonicParsing="false" text="Folder on server"/>
+                         <MenuItem mnemonicParsing="false" onAction="#createFileOnClient" text="File on client"/>
+                     </items>
+                 </Menu>
+                 <MenuItem mnemonicParsing="false" text="Open…"/>
                  <SeparatorMenuItem mnemonicParsing="false" />
                  <MenuItem mnemonicParsing="false" text="Close" />
                  <MenuItem mnemonicParsing="false" text="Save" />
@@ -47,28 +53,22 @@
                  <SeparatorMenuItem mnemonicParsing="false" />
                  <MenuItem mnemonicParsing="false" text="Preferences…" />
                  <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem onAction="#exit" text="Exit" />
+            <MenuItem mnemonicParsing="true" accelerator="CTRL+E" onAction="#exit" text="Exit" />
          </items>
          </Menu>
 
-        <Menu fx:id="menuEdit" text="Edit">
+        <Menu fx:id="menuEdit" text="_Edit">
             <items>
-                <MenuItem mnemonicParsing="false" text="Undo" />
-                <MenuItem mnemonicParsing="false" text="Redo" />
-                <SeparatorMenuItem mnemonicParsing="false" />
-                <MenuItem mnemonicParsing="false" text="Cut" />
-                <MenuItem mnemonicParsing="false" text="Copy" />
-                <MenuItem mnemonicParsing="false" text="Paste" />
-                <MenuItem mnemonicParsing="false" text="Delete" />
-                <SeparatorMenuItem mnemonicParsing="false" />
-                <MenuItem mnemonicParsing="false" text="Select All" />
-                <MenuItem mnemonicParsing="false" text="Unselect All" />
+                <MenuItem fx:id="cutItem" accelerator="CTRL+X" mnemonicParsing="true" text="Cut" onAction="#cutAction" />
+                <MenuItem fx:id="CopyItem" accelerator="CTRL+C" mnemonicParsing="false" text="Copy" onAction="#copyAction" />
+                <MenuItem fx:id="pasteItem" accelerator="CTRL+P" mnemonicParsing="false" text="Paste"/>
+                <MenuItem fx:id="deleteItem" accelerator="CTRL+D"  mnemonicParsing="false" text="Delete" onAction="#deleteAction"/>
             </items>
         </Menu>
 
-        <Menu fx:id="menuHelp" mnemonicParsing="false" text="Help">
+        <Menu fx:id="menuHelp" mnemonicParsing="false" text="_Help">
             <items>
-                <MenuItem mnemonicParsing="false" text="About File Storage" />
+                <MenuItem mnemonicParsing="false" accelerator="CTRL+A" text="About File Storage"  />
             </items>
         </Menu>
               </MenuBar>
@@ -77,19 +77,26 @@
         <TableView   fx:id="serverFiles" layoutX="434.0" layoutY="74.0" prefHeight="462.0" prefWidth="361.0" styleClass="background" stylesheets="@DarkTheme.css" />
         <Button fx:id="btnUp" ellipsisString="--&gt;" layoutX="372.0" layoutY="269.0" mnemonicParsing="false" onAction="#upload" prefHeight="15.0" prefWidth="38.0" styleClass="background" stylesheets="@DarkTheme.css" text="&gt;" />
         <Button fx:id="btnDown" ellipsisString="&lt;--" layoutX="372.0" layoutY="305.0" mnemonicParsing="false" onAction="#download" prefHeight="13.0" prefWidth="43.0" styleClass="background" stylesheets="@DarkTheme.css" text="&lt;" />
-        <Label fx:id="serverLabel" layoutX="475.0" layoutY="538.0" prefHeight="17.0" prefWidth="237.0" stylesheets="@DarkTheme.css" text="                           ServerFiles" textAlignment="CENTER" />
-        <Label fx:id="clientLabel" layoutX="49.0" layoutY="538.0" prefHeight="21.0" prefWidth="218.0" stylesheets="@DarkTheme.css" text="                         ClientFiles" textAlignment="CENTER" />
+        <Label fx:id="serverLabel" layoutX="475.0" layoutY="538.0" prefHeight="17.0" prefWidth="237.0"  stylesheets="@DarkTheme.css" text="                           ServerFiles" textAlignment="CENTER" />
+        <Label fx:id="clientLabel" layoutX="49.0" layoutY="538.0" prefHeight="21.0" prefWidth="218.0"  stylesheets="@DarkTheme.css" text="                         ClientFiles" textAlignment="CENTER" />
         <TextField fx:id="pathClientField" layoutX="7.0" layoutY="41.0" prefHeight="26.0" prefWidth="280.0" styleClass="background" stylesheets="@DarkTheme.css" />
         <TextField fx:id="pathServerField" layoutX="434.0" layoutY="41.0" prefHeight="26.0" prefWidth="280.0" styleClass="background" stylesheets="@DarkTheme.css" />
         <Button fx:id="backUpClient" ellipsisString="Back" layoutX="292.0" layoutY="41.0" mnemonicParsing="false" onAction="#btnPathUp" prefHeight="26.0" prefWidth="75.0" styleClass="background" stylesheets="@DarkTheme.css" text="BackUp" />
         <Button fx:id="backUpServer" ellipsisString="Back" layoutX="720.0" layoutY="41.0" mnemonicParsing="false" onAction="#btnPathServerUp" prefHeight="26.0" prefWidth="75.0" styleClass="background" stylesheets="@DarkTheme.css" text="BackUp" />
-        <Button fx:id="exit" layoutX="703.0" layoutY="563.0" mnemonicParsing="false" onAction="#exit" prefHeight="21.0" prefWidth="90.0" styleClass="background" stylesheets="@DarkTheme.css" text="Exit" />
-        <Button fx:id="delete" ellipsisString="Delete" layoutX="6.0" layoutY="563.0" mnemonicParsing="false" onAction="#deleteAction" prefHeight="21.0" prefWidth="90.0" styleClass="background" stylesheets="@DarkTheme.css" text="Delete" />
+        <Button fx:id="ex" layoutX="703.0" layoutY="563.0" mnemonicParsing="false" onAction="#exit" prefHeight="21.0" prefWidth="90.0" styleClass="background" stylesheets="@DarkTheme.css" text="Exit" />
+<!--          <Button fx:id="delete" ellipsisString="Delete" layoutX="6.0" layoutY="563.0" mnemonicParsing="false" onAction="#deleteAction" prefHeight="21.0" prefWidth="90.0" styleClass="background" stylesheets="@DarkTheme.css" text="Delete" />-->
         <Button fx:id="backToAuthPanel" ellipsisString="BackToAuth" layoutX="603.0" layoutY="563.0" mnemonicParsing="false" onAction="#backToAuthPanel" styleClass="background"  prefHeight="21.0" prefWidth="90.0" stylesheets="@DarkTheme.css" text="Back to auth"/>
+
         <stylesheets>
       <URL value="@DarkTheme.css" />
       <URL value="@DarkTheme.css" />
    </stylesheets>
     </AnchorPane>
+
+
+
+
+
+
 </AnchorPane>
 

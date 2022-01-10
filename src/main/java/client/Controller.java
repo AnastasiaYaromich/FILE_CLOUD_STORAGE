@@ -6,16 +6,23 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 import lombok.SneakyThrows;
 import model.*;
 import java.awt.*;
@@ -25,16 +32,11 @@ import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.URL;
-import java.nio.file.AccessDeniedException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.Date;
+import java.util.*;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 public class Controller implements Initializable {
@@ -42,9 +44,15 @@ public class Controller implements Initializable {
     @FXML public TableView<FileInfo> clientFiles;
     @FXML public TableView<File> serverFiles;
     @FXML public TextField pathClientField;
+    @FXML public MenuItem pasteItem;
+    @FXML public MenuItem createNew;
+    @FXML public Menu menuFile;
+    @FXML public AnchorPane createFilePanel;
 
     private Path baseDir;
     String serverRootPath;
+    private Path selectedCopyFile;
+    private Path selectedMoveFile;
     private Path serverRootClientPath;
     // Обмен командами.
     private ObjectDecoderInputStream is;
@@ -126,7 +134,7 @@ public class Controller implements Initializable {
                         } else {
                             if(item.isFile()) {
                                 image = new Image(getClass().getResourceAsStream("file3.png"));
-                                ImageView imageView =new ImageView(image);
+                                ImageView imageView = new ImageView(image);
                                 setGraphic(imageView);
                             }
                             else setGraphic(null);
@@ -160,7 +168,7 @@ public class Controller implements Initializable {
                         setStyle("");
                     } else {
                         String text = String.format("%,d bytes", item);
-                        if (item == -1) {
+                        if(item == 4096) {
                             text = "[DIR]";
                         }
                         setText(text);
@@ -220,14 +228,11 @@ public class Controller implements Initializable {
             };
         });
         serverFiles.getColumns().add(dateServColumn);
-        sizeColumn.setSortable(true);
-        sizeColumn.setSortType(TableColumn.SortType.DESCENDING);
-        clientFiles.getSortOrder().add(sizeColumn);
-        clientFiles.sort();
 
         try {
             baseDir = Paths.get(System.getProperty("user.home"));
-            clientFiles.getItems().addAll(getClientFiles());
+          //  clientFiles.getItems().addAll(getClientFiles());
+            fillClientView(getClientFiles());
             clientFiles.setOnMouseClicked(e -> {
                         if (e.getClickCount() == 2) {
                             FileInfo file = clientFiles.getSelectionModel().getSelectedItem();
@@ -237,9 +242,17 @@ public class Controller implements Initializable {
                                 try {
                                     fillClientView(getClientFiles());
                                 } catch (IOException ioException) {
-                                    ioException.printStackTrace();
+                                    Alert alert = new Alert(Alert.AlertType.ERROR, "\n" +
+                                            "Unable to open directory. Access denied!");
+                                    baseDir = path.getParent();
+                                    try {
+                                        fillClientView(getClientFiles());
+                                    } catch (IOException exception) {
+                                        exception.printStackTrace();
+                                    }
+                                    alert.showAndWait();
                                 }
-                            } else {
+                            } //else {
                                 // ВОЗНИКЛА ПРОБЛЕМА С ОТКРЫТИЕМ ФАЙЛА НА СТОРОНЕ КЛИЕНТА.
 //                                File selectedFile = new File(file.getFileName());
 //                                try {
@@ -247,19 +260,20 @@ public class Controller implements Initializable {
 //                                } catch (IOException ioException) {
 //                                    ioException.printStackTrace();
 //                                }
-                            }
+                          //  }
                         }
                     });
 
                         serverFiles.setOnMouseClicked(e -> {
                             if (e.getClickCount() == 2) {
                                 File file = serverFiles.getSelectionModel().getSelectedItem();
-                                System.out.println(serverRootClientPath);
                                 Path pathRoot = serverRootClientPath.resolve(file.getName());
-                                if (Files.isDirectory(pathRoot)) {
+                                if (file.isDirectory()) {
                                     serverRootClientPath = pathRoot;
+                                    System.out.println(serverRootClientPath);
                                     try {
                                         fillServerView(getServerFiles(serverRootClientPath));
+                                        sendCurrentServDir();
                                     } catch (IOException ioException) {
                                         ioException.printStackTrace();
                                     }
@@ -350,12 +364,24 @@ public class Controller implements Initializable {
         pathServerField.setText(serverRootClientPath.toString());
         serverFiles.getItems().clear();
         serverFiles.getItems().addAll(list);
+        serverFiles.getItems().sort(new Comparator<File>() {
+            @Override
+            public int compare(File o1, File o2) {
+                return new Long(o1.length() - o2.length()).intValue();
+            }
+        });
     }
 
     private void fillClientView(List<FileInfo> list) {
         pathClientField.setText(baseDir.toString());
         clientFiles.getItems().clear();
         clientFiles.getItems().addAll(list);
+        clientFiles.getItems().sort(new Comparator<FileInfo>() {
+            @Override
+            public int compare(FileInfo o1, FileInfo o2) {
+                return new Long(o1.getSize() - o2.getSize()).intValue();
+            }
+        });
     }
 
     private List<FileInfo> getClientFiles() throws IOException {
@@ -366,6 +392,7 @@ public class Controller implements Initializable {
     }
 
     private List<File> getServerFiles(Path path) throws IOException {
+        pathServerField.setText(path.toString());
         File file = new File(path.toString());
         File[] listFiles = file.listFiles();
         List<File> list = Arrays.asList(listFiles);
@@ -385,9 +412,15 @@ public class Controller implements Initializable {
         os.writeObject(new FileRequest(file.getName()));
     }
 
+    private void sendCurrentServDir() throws IOException {
+        os.writeObject(new PathTo(serverRootClientPath.toString()));
+    }
+
     public void exit(ActionEvent actionEvent) {
+     //   exit.setAccelerator(KeyCombination.keyCombination("CTRL+E"));
         Platform.exit();
     }
+
 
     public void btnPathUp(ActionEvent actionEvent) throws IOException {
         Path pathUp = Paths.get(pathClientField.getText()).getParent();
@@ -403,16 +436,9 @@ public class Controller implements Initializable {
         if(pathUp.compareTo(path) >= 0) {
             serverRootClientPath = pathUp;
             fillServerView(getServerFiles(serverRootClientPath));
+            sendCurrentServDir();
         }
     }
-
-    public void deleteAction(ActionEvent actionEvent) throws IOException {
-        FileInfo fileInfo = clientFiles.getSelectionModel().getSelectedItem();
-        if (!fileInfo.isDirectory()) {
-            Files.delete(baseDir.resolve(fileInfo.getFileName()));
-        }
-        fillClientView(getClientFiles());
-                }
 
     public void tryToAuth(ActionEvent actionEvent) {
         try {
@@ -450,6 +476,122 @@ public class Controller implements Initializable {
         regPanel.setVisible(false);
         authPanel.setVisible(true);
     }
+
+    public void copyAction(ActionEvent actionEvent) {
+        FileInfo fileInfo = clientFiles.getSelectionModel().getSelectedItem();
+        if(selectedCopyFile == null && (fileInfo == null || fileInfo.isDirectory())) {
+            return;
+        }
+
+        if(selectedCopyFile == null) {
+            selectedCopyFile = baseDir.resolve(fileInfo.getFileName());
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Nothing to copy!");
+            alert.showAndWait();
+            return;
+        }
+        if(selectedCopyFile != null) {
+            try {
+                pasteItem.setOnAction(new EventHandler<ActionEvent>() {
+                    @SneakyThrows
+                    @Override
+                    public void handle(ActionEvent event) {
+                        try {
+                            Files.copy(selectedCopyFile, baseDir.resolve(selectedCopyFile.getFileName()), StandardCopyOption.REPLACE_EXISTING);
+                            selectedCopyFile = null;
+                            fillClientView(getClientFiles());
+                        } catch (IOException e) {
+                            Alert alert = new Alert(Alert.AlertType.ERROR, "Unable to paste file!");
+                            alert.showAndWait();
+                        }
+                    }
+                });
+            } catch (Exception e) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Unable to copy file!");
+                alert.showAndWait();
+            }
+        }
+    }
+
+    public void deleteAction(ActionEvent actionEvent)  {
+        if (serverFiles.getSelectionModel().getSelectedItem() != null) {
+            File file = serverFiles.getSelectionModel().getSelectedItem();
+            try {
+                os.writeObject(new DeleteRequest(file.getName()));
+            } catch (IOException e) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Unable to delete file on Server!");
+                alert.showAndWait();
+            }
+        } else if (clientFiles.getSelectionModel().getSelectedItem() != null) {
+            FileInfo fileInfo = clientFiles.getSelectionModel().getSelectedItem();
+            if (!fileInfo.isDirectory() || fileInfo != null) {
+                try {
+                    Files.delete(baseDir.resolve(fileInfo.getFileName()));
+                    fillClientView(getClientFiles());
+                } catch (IOException e) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "Unable to delete file on Client!");
+                    alert.showAndWait();
+                }
+            }
+        }
+    }
+
+    public void cutAction(ActionEvent actionEvent)  {
+        FileInfo fileInfo = clientFiles.getSelectionModel().getSelectedItem();
+        if(selectedMoveFile == null && (fileInfo == null || fileInfo.isDirectory())) {
+            return;
+        }
+        if(selectedMoveFile == null) {
+            selectedMoveFile = baseDir.resolve(fileInfo.getFileName());
+            return;
+        }
+            try {
+                pasteItem.setOnAction(new EventHandler<ActionEvent>() {
+                                          @SneakyThrows
+                                          @Override
+                                          public void handle(ActionEvent event) {
+                                              try {
+                                              Files.move(selectedMoveFile, baseDir.resolve(selectedMoveFile.getFileName()), StandardCopyOption.REPLACE_EXISTING);
+                                              selectedMoveFile = null;
+                                              fillClientView(getClientFiles());
+                                          } catch (IOException e) {
+                        Alert alert = new Alert(Alert.AlertType.ERROR, "Unable to paste file!");
+                        alert.showAndWait();
+                    }
+                                          }
+                                      });
+            } catch (Exception e) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Unable to cut file!");
+                alert.showAndWait();
+            }
+
+    }
+
+
+    public void createFileOnClient(ActionEvent actionEvent) {
+        Label secondLabel = new Label("Enter a name for the new file");
+        TextField textField = new TextField("");
+        textField.setPrefWidth(50);
+        textField.setPrefHeight(30);
+        StackPane secondaryLayout = new StackPane();
+        secondaryLayout.getChildren().addAll(secondLabel, textField);
+        Scene secondScene = new Scene(secondaryLayout, 300, 150);
+        secondScene.setUserAgentStylesheet("/DarkTheme.css");
+        Stage newWindow = new Stage();
+        newWindow.setTitle("Choose file name");
+        newWindow.setScene(secondScene);
+        newWindow.show();
+
+        String fileExtension = "txt";
+        try {
+            System.out.println(baseDir);
+            File file = new File(baseDir + "/" + "New text document" + "." + fileExtension);
+            file.createNewFile();
+            fillClientView(getClientFiles());
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+    }
 }
+
 
 
