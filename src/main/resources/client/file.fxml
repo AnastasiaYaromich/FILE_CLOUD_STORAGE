@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import java.net.URL?>
+<AnchorPane fx:id="filePanel" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="client.FileController" prefHeight="204.0" prefWidth="330.0">
+    <children>
+        <TextField fx:id="fileNameField" layoutX="49.0" layoutY="119.0" prefHeight="30.0" prefWidth="234.0" />
+        <Button fx:id="fileOkButton" layoutX="129.0" layoutY="159.0" mnemonicParsing="false" onAction="#createFile" prefHeight="25.0" prefWidth="72.0" text="OK" />
+        <Label layoutX="73.0" layoutY="94.0" prefHeight="25.0" prefWidth="201.0" text="Please, enter new file name" />
+        <Label layoutX="25.0" layoutY="14.0" prefHeight="20.0" prefWidth="295.0" text="Please, choose where you want to create file" />
+        <RadioButton fx:id="clientRadioButton" layoutX="102.0" layoutY="34.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="142.0" text="New client file" />
+        <RadioButton fx:id="serverRadioButton" layoutX="102.0" layoutY="59.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="127.0" text="New server file" />
+    </children>
+    <stylesheets>
+        <URL value="@DarkTheme.css" />
+        <URL value="@DarkTheme.css" />
+    </stylesheets>
+
+</AnchorPane>

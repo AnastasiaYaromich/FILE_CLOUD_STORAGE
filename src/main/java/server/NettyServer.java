@@ -51,7 +51,7 @@ public class NettyServer {
             // Запускаем сервер. b.bind указывает, что сервер должен стартануть
             // на порту 8187. sync - сервер запускается.
             // Через ChannelFuture будем узнавать о дальнейшей судьбе сервера.
-            ChannelFuture future = bootstrap.bind(8174).sync();
+            ChannelFuture future = bootstrap.bind(8189).sync();
             log.debug("Server started...");
 
             // Здесь ожидаем остановки сервера. Это блокирующая операция.

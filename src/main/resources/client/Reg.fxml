@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import java.net.URL?>
+<AnchorPane fx:id="regPanel" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="client.RegController" prefHeight="600.0" prefWidth="800.0">
+    <Label fx:id="regLabel"  AnchorPane.leftAnchor="250" AnchorPane.topAnchor="185" text="Welcome to Register Form! "></Label>
+    <Label fx:id="infoRegLabel" AnchorPane.leftAnchor="275" AnchorPane.topAnchor="220" text="Please, enter your login and password."></Label>
+    <TextField fx:id="loginField" AnchorPane.leftAnchor="295" AnchorPane.topAnchor="250" prefWidth="200" promptText="Enter your login"/>
+    <PasswordField fx:id="passwordField" AnchorPane.leftAnchor="295" AnchorPane.topAnchor="290" prefWidth="200"  promptText="Enter your password"></PasswordField>
+    <Button fx:id="registerButton" text = "Register" AnchorPane.rightAnchor="306"  AnchorPane.topAnchor="335" prefHeight="30" prefWidth="90" onAction="#signUp"></Button>
+    <Button fx:id="backAuthFormButton" onAction="#backAuthForm" text = "Back" AnchorPane.leftAnchor="295" AnchorPane.topAnchor="335" prefHeight="30" prefWidth="90"></Button>
+    <stylesheets>
+        <URL value="@DarkTheme.css" />
+        <URL value="@DarkTheme.css" />
+    </stylesheets>
+</AnchorPane>

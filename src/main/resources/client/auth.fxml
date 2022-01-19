@@ -5,10 +5,18 @@
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import java.net.URL?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="client.Auth"
-            prefHeight="400.0" prefWidth="600.0">
+<AnchorPane fx:id="authPanel" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="client.AuthController" prefHeight="600.0" prefWidth="800.0">
+    <Label fx:id="authLabel"  AnchorPane.leftAnchor="250" AnchorPane.topAnchor="185" text="Welcome to File Storage! "></Label>
+    <Label fx:id="infoLabel" AnchorPane.leftAnchor="310" AnchorPane.topAnchor="220" text="Please, log in or register... "></Label>
+    <TextField fx:id="loginField" AnchorPane.leftAnchor="295" AnchorPane.topAnchor="250" prefWidth="200" promptText="Enter your login"/>
+    <PasswordField fx:id="passwordField" AnchorPane.leftAnchor="295" AnchorPane.topAnchor="290" prefWidth="200"  promptText="Enter your password"></PasswordField>
+    <Button fx:id="authButton" text = "LogIn" AnchorPane.leftAnchor="295" AnchorPane.topAnchor="335" prefHeight="30" prefWidth="90" onAction="#logIn"></Button>
+    <Button fx:id="regButton" text= "SignUp" AnchorPane.rightAnchor="306" AnchorPane.topAnchor="335" prefHeight="30" prefWidth="90" onAction="#signUp"></Button>
+    <stylesheets>
+        <URL value="@DarkTheme.css" />
+        <URL value="@DarkTheme.css" />
+    </stylesheets>
 
 </AnchorPane>

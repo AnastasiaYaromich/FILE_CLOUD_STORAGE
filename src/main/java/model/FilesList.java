@@ -20,7 +20,6 @@ public class FilesList implements AbstractMessage {
                 .collect(Collectors.toList());
     }
 
-
     @Override
     public MessageType getMessageType() {
         return MessageType.FILES_LIST;

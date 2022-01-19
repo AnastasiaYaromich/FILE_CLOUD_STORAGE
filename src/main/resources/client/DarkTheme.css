@@ -1,4 +1,4 @@
- #mainPanel {
+ #mainPanels {
       -fx-background-image: url("img2.jpg");
  }
 
@@ -302,9 +302,9 @@
               -fx-opacity: 1.0;
               -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
               -fx-font-size: 10pt;
-              -fx-text-fill: #696969;
-                  -fx-border-radius: 5px;
-                      -fx-background-radius: 5;
+          -fx-text-fill: #696969;
+          -fx-border-radius: 5px;
+          -fx-background-radius: 5;
  }
 
  .table-view {
@@ -333,51 +333,85 @@
  }
 
  .table-view .table-cell{
+          -fx-text-fill: #696969;
+ }
+
+ #folderPanel {
+          -fx-background-image: url("img2.jpg");
+ }
+
+  #filePanel {
+           -fx-background-image: url("img2.jpg");
+  }
+
+ #folderNameField {
+        -fx-opacity: 0.7;
+        -fx-border-color: none;
+        -fx-background-color: rgb(245,245,245);
+        -fx-border-width: 1;
+        -fx-border-color: #C0C0C0;
+ }
+
+  #fileNameField {
+         -fx-opacity: 0.7;
+         -fx-border-color: none;
+         -fx-background-color: rgb(245,245,245);
+         -fx-border-width: 1;
+         -fx-border-color: #C0C0C0;
+  }
+
+ #folderOkButton {
+     -fx-border-color: #C0C0C0;
+     -fx-border-width: 1;
+     -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+     -fx-font-size: 10pt;
      -fx-text-fill: #696969;
+     -fx-border-radius: 5px;
+     -fx-background-radius: 5;
+     -fx-box-shadow:none;
  }
 
-  .dialog-pane{
-   -fx-border-color:black;
-   -fx-border-width:2.0px;
+ #fileOkButton {
+      -fx-border-color: #C0C0C0;
+      -fx-border-width: 1;
+      -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+      -fx-font-size: 10pt;
+      -fx-text-fill: #696969;
+      -fx-border-radius: 5px;
+      -fx-background-radius: 5;
+      -fx-box-shadow:none;
   }
 
- /**Costumization of The Bar where the buttons are located**/
- .dialog-pane > .button-bar > .container {
-   -fx-background-color:black;
+ #folderOkButton:focused {
+      -fx-focus-color: -fx-control-inner-background ;
+      -fx-faint-focus-color: -fx-control-inner-background ;
  }
 
- .dialog-pane > .content.label {
-    -fx-padding: 0.5em 0.5em 0.5em 0.5em;
-    -fx-background-color: yellow;
-    -fx-text-fill:black;
-    -fx-font-size:15.0px;
+ .radio-button .radio {
+     -fx-border-width: 1px;
+     -fx-border-color: #808080;
+     -fx-background-color: white;
+     -fx-background-image: null;
+     -fx-border-radius: 10px;
+     -fx-padding: 4px;
+           -fx-text: red;
  }
 
- /**Costumization of DialogPane Header**/
- .dialog-pane:header .header-panel {
-   -fx-background-color: black;
+ .radio-button .dot {
+    -fx-background-radius: 10px;
+    -fx-padding: 4px;
+          -fx-text-fill: #808080;
  }
 
- .dialog-pane:header .header-panel .label{
-   -fx-background-color: yellow;
-   -fx-background-radius:10px;
-   -fx-text-fill:black;
-   -fx-font-size:15.0px;
+ .radio-button .text {
+     -fx-font-size: 9pt;
+     -fx-text-fill: red;
+     -fx-background-color: #808080;
  }
 
-
- /**Costumization of Buttons**/
- .dialog-pane .button{
-    -fx-background-color:black;
-    -fx-text-fill:white;
-    -fx-wrap-text: true;
-    -fx-effect: dropshadow( three-pass-box, yellow, 10.0, 0.0, 0.0, 0.0);
-    -fx-cursor:hand;
-  }
-
- .dialog-pane .button:hover{
-   -fx-background-color:white;
-   -fx-text-fill:black;
-   -fx-font-weight:bold;
-  }
+ #clientRadioButton .label .text {
+      -fx-font-size: 9pt;
+      -fx-text-fill: #808080;
+      -fx-background-color: #808080;
+ }
  }

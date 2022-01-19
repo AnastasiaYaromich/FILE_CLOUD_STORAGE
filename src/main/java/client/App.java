@@ -9,10 +9,14 @@ import javafx.stage.Stage;
 public class App extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent parent = FXMLLoader.load(getClass().getResource("cloud_client.fxml"));
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("auth.fxml"));
+        Parent parent = loader.load();
+        AuthController authController = loader.getController();
+        authController.setStage(primaryStage);
         primaryStage.setTitle("File storage");
         primaryStage.setScene(new Scene(parent));
-        primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("icon1.png")));
+        primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("listik.png")));
         primaryStage.show();
     }
 }

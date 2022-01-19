@@ -3,7 +3,8 @@ package server;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import model.*;
-
+import java.awt.*;
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -25,7 +26,7 @@ public class AbstractMessageHandler extends SimpleChannelInboundHandler<Abstract
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         // Отправляем клиенту список файлов, которые есть на сервере.
         System.out.println("chanelActive");
-  //      ctx.writeAndFlush(new FilesList(currentPath));
+      //  ctx.writeAndFlush(new FilesList(userRootPath));
     }
 
     // Когда клиент прислал какое-то сообщение срабатывает channelRead0.
@@ -49,6 +50,7 @@ public class AbstractMessageHandler extends SimpleChannelInboundHandler<Abstract
                     userRootPath = Paths.get(currentPath + "/" + authenticationRequest.getLogin());
                     ctx.writeAndFlush(new AuthenticationComplete(userRootPath.toString()));
                     ctx.writeAndFlush(new FilesList(userRootPath));
+                 //   ctx.writeAndFlush(new UserInfo(userRootPath.toString()));
                     break;
                 }
             case ADD_ACCOUNT:
@@ -64,9 +66,8 @@ public class AbstractMessageHandler extends SimpleChannelInboundHandler<Abstract
                     AuthService.addAccount(addAccount.getLogin(), addAccount.getPassword(), userRootPath.toString());
                     // Создаем корневую директорию клиента на сервере.
                     Files.createDirectory(userRootPath);
-
                     // Отправляем клиенту сообщение, что регистриция завершена.
-                    ctx.writeAndFlush(new UserInfo("User " + addAccount.getLogin() + " registered"));
+                    ctx.writeAndFlush(new RegistrationComplete(userRootPath.toString()));
                     // Возвращаем клиент обновленный список файлов на сервере.
                     ctx.writeAndFlush(new FilesList(userRootPath));
                 } else {
@@ -76,10 +77,39 @@ public class AbstractMessageHandler extends SimpleChannelInboundHandler<Abstract
                 }
                 break;
                 // Если сообщение клиента является отправкой его текущей директории на сервере
-            case PATH_TO:
-                PathTo path = (PathTo) message;
-                // Изменяем userRootPath
-                userRootPath = Paths.get(path.getPathTo());
+            case CHANGE_DIRECTORY:
+                ChangeDirectory changeDirectory = (ChangeDirectory) message;
+                Path pathRoot = Paths.get(changeDirectory.getDirName());
+                if(Files.isDirectory(pathRoot)) {
+                    userRootPath = pathRoot;
+                    ctx.writeAndFlush(new FilesList(userRootPath));
+                    ctx.writeAndFlush(new UserInfo(userRootPath.toString()));
+                } else {
+                    try {
+                        File file = new File(pathRoot.toString());
+                        Desktop.getDesktop().open(file);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                break;
+            case CHANGE_DIRECTORY_UP:
+                if(!userRootPath.getParent().equals(currentPath)) {
+                    userRootPath = userRootPath.getParent();
+                    ctx.writeAndFlush(new FilesList(userRootPath));
+                    ctx.writeAndFlush(new UserInfo(userRootPath.toString()));
+                }
+                break;
+            case CREATE_FOLDER:
+                CreateFolder createFolder = (CreateFolder) message;
+                Files.createDirectory(userRootPath.resolve(createFolder.getFolderName()));
+                ctx.writeAndFlush(new FilesList(userRootPath));
+                break;
+            case CREATE_FILE:
+                CreateFile createFile = (CreateFile) message;
+                Files.createFile(userRootPath.resolve(createFile.getFileName()));
+                ctx.writeAndFlush(new FilesList(userRootPath));
+                break;
             case FILE_REQUEST:
                 FileRequest req = (FileRequest) message;
                 // Отправляем клиенту запрашиваемый файл.
@@ -100,6 +130,10 @@ public class AbstractMessageHandler extends SimpleChannelInboundHandler<Abstract
                 Files.write(userRootPath.resolve(fileMessage.getFileName()), fileMessage.getBytes());
                 // Возвращаем клиенту обновленный список файлов на сервере.
                 ctx.writeAndFlush(new FilesList(userRootPath));
+                break;
+            case REFRESH_CLIENT_VIEW:
+                RefreshClientView refreshClientView = (RefreshClientView) message;
+                ctx.writeAndFlush(new RefreshClientView());
                 break;
         }
     }
