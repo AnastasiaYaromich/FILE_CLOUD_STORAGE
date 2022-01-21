@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import java.net.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import java.net.URL?>
+
+<AnchorPane fx:id="aboutPanel" prefHeight="342.0" prefWidth="523.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.AboutProgramController">
+    <children>
+        <ImageView fitHeight="103.0" fitWidth="103.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@biglist.png" />
+            </image>
+        </ImageView>
+      <Label fx:id="nameProgramLabel" layoutX="123.0" layoutY="32.0" prefHeight="67.0" prefWidth="400.0" text="FILE CLOUD STORAGE">
+      </Label>
+        <Separator layoutX="17.0" layoutY="113.0" prefHeight="8.0" prefWidth="489.0"> </Separator>
+      <ImageView fitHeight="45.0" fitWidth="44.0" layoutX="17.0" layoutY="135.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@biglist.png" />
+         </image>
+      </ImageView>
+      <Label layoutX="66.0" layoutY="135.0" prefHeight="8.0" prefWidth="305.0" text="Created by Anastasia Yaromich &amp; Afina the Cat." />
+      <Label layoutX="67.0" layoutY="155.0" prefHeight="20.0" prefWidth="77.0" text="Version 1.0 " />
+      <Label layoutX="23.0" layoutY="193.0" prefHeight="20.0" prefWidth="476.0" text="File storage provides services for the safe and secure storage of your files," />
+      <Label layoutX="23.0" layoutY="213.0" prefHeight="20.0" prefWidth="476.0" text="as well as their transfer and recovery." />
+      <Separator layoutX="14.0" layoutY="248.0" prefHeight="8.0" prefWidth="489.0" />
+      <Label layoutX="234.0" layoutY="290.0" prefHeight="20.0" prefWidth="275.0" text="\@2022,  Anastasia Yaromich &amp; Afina the Cat." />
+      <Label layoutX="390.0" layoutY="310.0" prefHeight="20.0" prefWidth="113.0" text="All rights reserved." />
+    </children>
+    <stylesheets>
+        <URL value="@DarkTheme.css" />
+        <URL value="@DarkTheme.css" />
+    </stylesheets>
+</AnchorPane>

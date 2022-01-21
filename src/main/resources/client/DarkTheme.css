@@ -149,17 +149,51 @@
  }
 
  #menuFile .menu-item {
-       -fx-padding: 0.0em 5.0em 0.0em 1.0em;
        -fx-background: rgb(169, 217, 171);
        -fx-text-fill: #696969;
-       -fx-pref-width: 150px;
+       -fx-pref-width: 153px;
+ }
+
+ #createNew {
+    -fx-text-alignment: center;
+    -fx-padding: 0.0em 0.0em 0.0em 2.0em;
+ }
+
+ #preferences {
+  -fx-padding: 0.0em 0.0em 0.0em 0.0em;
+ }
+
+ #exitMenu {
+   -fx-text-alignment: center;
+     -fx-padding: 0.0em 0.0em 0.0em 2.0em;
+ }
+
+ #cutItem {
+  -fx-padding: 0.0em 0.0em 0.0em 0.3em;
+ }
+
+ #CopyItem {
+  -fx-padding: 0.0em 0.0em 0.0em 0.3em;
+ }
+
+ #pasteItem {
+ -fx-padding: 0.0em 0.0em 0.0em 2.3em;
+ }
+
+  #deleteItem {
+  -fx-padding: 0.0em 0.0em 0.0em 2.3em;
+  }
+
+ #preferences > .label {
+ -fx-graphic: url("menukeys.png");
+ -fx-content-display:left;
  }
 
  #menuHelp .menu-item {
         -fx-padding: 0.0em 5.0em 0.0em 1.0em;
         -fx-background: rgb(169, 217, 171);
         -fx-text-fill: #696969;
-        -fx-pref-width: 185px;
+        -fx-pref-width: 160px;
  }
 
  .menu-item .label:hover {
@@ -414,4 +448,26 @@
       -fx-text-fill: #808080;
       -fx-background-color: #808080;
  }
+
+ #nameProgramLabel {
+  -fx-font-size: 24pt;
  }
+
+ #createFile > .label {
+ -fx-graphic: url("menufile.png");
+ }
+
+ #createDirectory  > .label {
+ -fx-graphic: url("menupapk.png");
+ }
+
+ #cutItem > .label {
+  -fx-graphic: url("cutF.png");
+ }
+
+ #CopyItem > .label {
+  -fx-graphic: url("copyFile.png");
+ }
+
+
+}

@@ -76,7 +76,7 @@ public class AuthController implements Initializable, MessageProcessor {
         }
     }
 
-    private void completeAuth(FilesList filesList, AbstractMessage message) {
+    private void completeAuth(FilesList fileList, AbstractMessage message) {
         Platform.runLater(() -> {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("mainPanel.fxml"));
@@ -87,10 +87,10 @@ public class AuthController implements Initializable, MessageProcessor {
                 mainController.setMessageService(messageService);
                 messageService.setMessageProcessor(mainController);
                 FilesList files = (FilesList) message;
-                mainController.setStage(stage);
                 mainController.pathServerField.setText(userRootPath);
                 mainController.fillServerView(files.getFiles());
                 mainController.launch();
+                mainController.setStage(stage);
             } catch (IOException e) {
                 e.printStackTrace();
             }

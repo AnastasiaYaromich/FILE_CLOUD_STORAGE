@@ -18,5 +18,7 @@ public enum MessageType {
     CREATE_FOLDER,
     REFRESH_CLIENT_VIEW,
     CREATE_FILE,
-    FILE_INFO;
+    COPY_REQUEST,
+    PASTE_REQUEST,
+    CUT_REQUEST;
 }

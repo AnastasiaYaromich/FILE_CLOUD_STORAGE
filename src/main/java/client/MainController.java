@@ -47,7 +47,6 @@ public class MainController implements  MessageProcessor {
     @FXML public Menu menuFile;
     @FXML public AnchorPane createFilePanel;
 
-    String serverRootPath;
     private Path selectedCopyFile;
     private Path selectedMoveFile;
     private Path serverRootClientPath;
@@ -60,24 +59,12 @@ public class MainController implements  MessageProcessor {
     // Иконки папок и файлов.
     private ImageView imageView;
     private Image image;
-    // Панель сервера.
-    @FXML Label authLabel;
-    @FXML AnchorPane authPanel;
-    @FXML TextField loginField;
-    @FXML PasswordField passwordField;
-    @FXML Button authButton;
-    @FXML Button regButton;
-    @FXML AnchorPane regPanel;
-    @FXML TextField rootRegField;
+
     @FXML AnchorPane mainPanel;
-    @FXML TextField loginRegField;
-    @FXML PasswordField passwordRegField;
     @FXML TextField pathServerField;
 
     @Setter private MessageService messageService;
     @Setter private Stage stage;
-   // @Setter Path userRootPath;
- //  @Setter Path currentUserPath;
 
     @Override
     public void processMessage(AbstractMessage message) {
@@ -99,7 +86,7 @@ public class MainController implements  MessageProcessor {
                         }
                     });
                     break;
-                // Если сервер отправил список файлов на нем -->
+       //          Если сервер отправил список файлов на нем -->
                 case FILES_LIST:
                     FilesList files = (FilesList) message;
                     // Обновляем список файлов на сервере -->
@@ -214,7 +201,7 @@ public class MainController implements  MessageProcessor {
                         setStyle("");
                     } else {
                         String text = String.format("%,d bytes", item);
-                        if(item == 4096) {
+                        if (item == 4096) {
                             text = "[DIR]";
                         }
                         setText(text);
@@ -302,11 +289,11 @@ public class MainController implements  MessageProcessor {
             serverFiles.setOnMouseClicked(e -> {
                 if (e.getClickCount() == 2) {
                     File file = serverFiles.getSelectionModel().getSelectedItem();
-                        try {
-                            messageService.sendMessage(new ChangeDirectory(file.toString()));
-                        } catch (IOException ioException) {
-                            ioException.printStackTrace();
-                        }
+                    try {
+                        messageService.sendMessage(new ChangeDirectory(file.toString()));
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
+                    }
                 }
             });
         } catch (IOException e) {
@@ -314,9 +301,15 @@ public class MainController implements  MessageProcessor {
         }
     }
 
-   public void fillServerView(List<File> list) {
+    public void fillServerView(List<File> list) {
         serverFiles.getItems().clear();
         serverFiles.getItems().addAll(list);
+        serverFiles.getItems().sort(new Comparator<File>() {
+            @Override
+            public int compare(File o1, File o2) {
+                return (o1.isDirectory() ? 1 : -1) - (o2.isDirectory() ? 1 : -1);
+            }
+        });
         serverFiles.getItems().sort(new Comparator<File>() {
             @Override
             public int compare(File o1, File o2) {
@@ -396,31 +389,18 @@ public class MainController implements  MessageProcessor {
 
     }
 
-    public void copyAction(ActionEvent actionEvent) {
-        FileInfo fileInfo = clientFiles.getSelectionModel().getSelectedItem();
-        if(selectedCopyFile == null && (fileInfo == null || fileInfo.isDirectory())) {
-            return;
-        }
-
-        if(selectedCopyFile == null) {
-            selectedCopyFile = messageService.getBaseDir().resolve(fileInfo.getFileName());
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Nothing to copy!");
-            alert.showAndWait();
-            return;
-        }
-        if(selectedCopyFile != null) {
+    public void copyAction(ActionEvent actionEvent) throws IOException {
+        if (serverFiles.getSelectionModel().getSelectedItem() != null) {
+            File file = serverFiles.getSelectionModel().getSelectedItem();;
+            messageService.getOs().writeObject(new CopyRequest(file.getName()));
             try {
                 pasteItem.setOnAction(new EventHandler<ActionEvent>() {
-                    @SneakyThrows
                     @Override
                     public void handle(ActionEvent event) {
                         try {
-                            Files.copy(selectedCopyFile, messageService.getBaseDir().resolve(selectedCopyFile.getFileName()), StandardCopyOption.REPLACE_EXISTING);
-                            selectedCopyFile = null;
-                            fillClientView(getClientFiles());
-                        } catch (IOException e) {
-                            Alert alert = new Alert(Alert.AlertType.ERROR, "Unable to paste file!");
-                            alert.showAndWait();
+                            messageService.getOs().writeObject(new PasteRequest(file.getName(), "Copy"));
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                     }
                 });
@@ -429,7 +409,35 @@ public class MainController implements  MessageProcessor {
                 alert.showAndWait();
             }
         }
-    }
+            if (clientFiles.getSelectionModel().getSelectedItem() != null) {
+                FileInfo fileInfo = clientFiles.getSelectionModel().getSelectedItem();
+                if (selectedCopyFile == null && (fileInfo == null || fileInfo.isDirectory())) {
+                    return;
+                }
+                if (selectedCopyFile == null) {
+                    selectedCopyFile = messageService.getBaseDir().resolve(fileInfo.getFileName());
+                }
+                try {
+                    pasteItem.setOnAction(new EventHandler<ActionEvent>() {
+                        @SneakyThrows
+                        @Override
+                        public void handle(ActionEvent event) {
+                            try {
+                                Files.copy(selectedCopyFile, messageService.getBaseDir().resolve(selectedCopyFile.getFileName()), StandardCopyOption.REPLACE_EXISTING);
+                                fillClientView(getClientFiles());
+                                selectedCopyFile = null;
+                            } catch (IOException e) {
+                                Alert alert = new Alert(Alert.AlertType.ERROR, "Unable to paste file!");
+                                alert.showAndWait();
+                            }
+                        }
+                    });
+                } catch (Exception e) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "Unable to copy file!");
+                    alert.showAndWait();
+                }
+            }
+        }
 
     public void deleteAction(ActionEvent actionEvent)  {
         if (serverFiles.getSelectionModel().getSelectedItem() != null) {
@@ -442,7 +450,7 @@ public class MainController implements  MessageProcessor {
             }
         } else if (clientFiles.getSelectionModel().getSelectedItem() != null) {
             FileInfo fileInfo = clientFiles.getSelectionModel().getSelectedItem();
-            if (!fileInfo.isDirectory() || fileInfo != null) {
+            if (!fileInfo.isDirectory()) {
                 try {
                     Files.delete(messageService.getBaseDir().resolve(fileInfo.getFileName()));
                     fillClientView(getClientFiles());
@@ -454,14 +462,32 @@ public class MainController implements  MessageProcessor {
         }
     }
 
-    public void cutAction(ActionEvent actionEvent)  {
+    public void cutAction(ActionEvent actionEvent) throws IOException {
+        if (serverFiles.getSelectionModel().getSelectedItem() != null) {
+            File file = serverFiles.getSelectionModel().getSelectedItem();;
+            messageService.getOs().writeObject(new CutRequest(file.getName()));
+            try {
+                pasteItem.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent event) {
+                        try {
+                            messageService.getOs().writeObject(new PasteRequest(file.getName(), "Cut"));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            } catch (Exception e) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Unable to copy file!");
+                alert.showAndWait();
+            }
+        }
         FileInfo fileInfo = clientFiles.getSelectionModel().getSelectedItem();
         if(selectedMoveFile == null && (fileInfo == null || fileInfo.isDirectory())) {
             return;
         }
         if(selectedMoveFile == null) {
             selectedMoveFile = messageService.getBaseDir().resolve(fileInfo.getFileName());
-            return;
         }
         try {
             pasteItem.setOnAction(new EventHandler<ActionEvent>() {
@@ -470,8 +496,8 @@ public class MainController implements  MessageProcessor {
                 public void handle(ActionEvent event) {
                     try {
                         Files.move(selectedMoveFile, messageService.getBaseDir().resolve(selectedMoveFile.getFileName()), StandardCopyOption.REPLACE_EXISTING);
-                        selectedMoveFile = null;
                         fillClientView(getClientFiles());
+                        selectedMoveFile = null;
                     } catch (IOException e) {
                         Alert alert = new Alert(Alert.AlertType.ERROR, "Unable to paste file!");
                         alert.showAndWait();
@@ -486,10 +512,10 @@ public class MainController implements  MessageProcessor {
 
     public void createFolder(ActionEvent actionEvent) throws IOException {
         Stage folderStage = new Stage();
-        FXMLLoader loaderF = new FXMLLoader();
-        loaderF.setLocation(this.getClass().getResource("folder.fxml"));
-        Parent parent = loaderF.load();
-        FolderController controller = loaderF.getController();
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(this.getClass().getResource("folder.fxml"));
+        Parent parent = loader.load();
+        FolderController controller = loader.getController();
         controller.setStage(folderStage);
         controller.setMessageService(messageService);
         controller.launch();
@@ -514,6 +540,21 @@ public class MainController implements  MessageProcessor {
         fileStage.getIcons().add(new Image(getClass().getResourceAsStream("listik.png")));
         fileStage.setTitle("New file");
         fileStage.show();
+    }
+
+    public void aboutFileStorage(ActionEvent actionEvent) throws IOException {
+        Stage aboutStage = new Stage();
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(this.getClass().getResource("aboutProgram.fxml"));
+        Parent parent = loader.load();
+        AboutProgramController controller = loader.getController();
+        controller.setStage(aboutStage);
+        controller.setMessageService(messageService);
+        Scene scene = new Scene(parent);
+        aboutStage.setScene(scene);
+        aboutStage.getIcons().add(new Image(getClass().getResourceAsStream("listik.png")));
+        aboutStage.setTitle("About File Storage");
+        aboutStage.show();
     }
 }
 

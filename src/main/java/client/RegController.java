@@ -47,9 +47,10 @@ public class RegController implements MessageProcessor {
             FilesList files = (FilesList) message;
             completeRegistration(files, message);
         }
+
     }
 
-    private void completeRegistration(FilesList filesList, AbstractMessage message) {
+    private void completeRegistration(FilesList fileList, AbstractMessage message) {
         Platform.runLater(() -> {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("mainPanel.fxml"));

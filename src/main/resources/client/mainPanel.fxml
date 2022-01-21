@@ -14,33 +14,33 @@
                 <items>
                     <Menu fx:id="createNew" mnemonicParsing="false" text="New">
                         <items>
-                            <MenuItem mnemonicParsing="false" onAction="#createFile" text="File"/>
-                            <MenuItem mnemonicParsing="false" onAction="#createFolder" text="Directory"/>
+                            <MenuItem fx:id="createFile" mnemonicParsing="false" onAction="#createFile" text="File"/>
+                            <MenuItem fx:id="createDirectory" mnemonicParsing="false" onAction="#createFolder" text="Directory"/>
                         </items>
                     </Menu>
                     <SeparatorMenuItem mnemonicParsing="false" />
-                    <MenuItem mnemonicParsing="false" text="Save" />
-                    <MenuItem mnemonicParsing="false" text="Save As…" />
-                    <MenuItem mnemonicParsing="false" text="Revert" />
+<!--                    <MenuItem mnemonicParsing="false" text="Save" />-->
+<!--                    <MenuItem mnemonicParsing="false" text="Save As…" />-->
+<!--                    <MenuItem mnemonicParsing="false" text="Revert" />-->
+<!--                    <SeparatorMenuItem mnemonicParsing="false" />-->
+                    <MenuItem fx:id="preferences" mnemonicParsing="false" text="Preferences…" />
                     <SeparatorMenuItem mnemonicParsing="false" />
-                    <MenuItem mnemonicParsing="false" text="Preferences…" />
-                    <SeparatorMenuItem mnemonicParsing="false" />
-                    <MenuItem mnemonicParsing="true" accelerator="CTRL+E" onAction="#exit" text="Exit" />
+                    <MenuItem fx:id="exitMenu" mnemonicParsing="false" onAction="#exit" text="Exit" />
                 </items>
             </Menu>
 
             <Menu fx:id="menuEdit" text="_Edit">
                 <items>
-                    <MenuItem fx:id="cutItem" accelerator="CTRL+X" mnemonicParsing="true" text="Cut" onAction="#cutAction" />
-                    <MenuItem fx:id="CopyItem" accelerator="CTRL+C" mnemonicParsing="false" text="Copy" onAction="#copyAction" />
-                    <MenuItem fx:id="pasteItem" accelerator="CTRL+P" mnemonicParsing="false" text="Paste"/>
-                    <MenuItem fx:id="deleteItem" accelerator="CTRL+D"  mnemonicParsing="false" text="Delete" onAction="#deleteAction"/>
+                    <MenuItem fx:id="cutItem"  mnemonicParsing="true" text="Cut" onAction="#cutAction" />
+                    <MenuItem fx:id="CopyItem"  mnemonicParsing="false" text="Copy" onAction="#copyAction" />
+                    <MenuItem fx:id="pasteItem"  mnemonicParsing="false" text="Paste"/>
+                    <MenuItem fx:id="deleteItem"  mnemonicParsing="false" text="Delete" onAction="#deleteAction"/>
                 </items>
             </Menu>
 
             <Menu fx:id="menuHelp" mnemonicParsing="false" text="_Help">
                 <items>
-                    <MenuItem mnemonicParsing="false" accelerator="CTRL+A" text="About File Storage"  />
+                    <MenuItem mnemonicParsing="false" onAction="#aboutFileStorage" text="About File Storage"/>
                 </items>
             </Menu>
         </MenuBar>
@@ -58,7 +58,6 @@
         <Button fx:id="ex" layoutX="703.0" layoutY="563.0" mnemonicParsing="false" onAction="#exit" prefHeight="21.0" prefWidth="90.0" styleClass="background" stylesheets="@DarkTheme.css" text="Exit" />
         <!--          <Button fx:id="delete" ellipsisString="Delete" layoutX="6.0" layoutY="563.0" mnemonicParsing="false" onAction="#deleteAction" prefHeight="21.0" prefWidth="90.0" styleClass="background" stylesheets="@DarkTheme.css" text="Delete" />-->
         <Button fx:id="backToAuthPanel" ellipsisString="BackToAuth" layoutX="603.0" layoutY="563.0" mnemonicParsing="false" onAction="#backToAuthPanel" styleClass="background"  prefHeight="21.0" prefWidth="90.0" stylesheets="@DarkTheme.css" text="Back to auth"/>
-
         <stylesheets>
             <URL value="@DarkTheme.css" />
             <URL value="@DarkTheme.css" />

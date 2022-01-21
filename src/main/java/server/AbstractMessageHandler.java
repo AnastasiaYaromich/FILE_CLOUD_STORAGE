@@ -8,7 +8,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
+import java.nio.file.StandardCopyOption;
 
 // Для того, чтобы создать handler обрабатывал входящие данные,
 // наследуемся от SimpleChannelInboundHandler. Inbound означает,
@@ -16,6 +16,8 @@ import java.nio.file.Paths;
 public class AbstractMessageHandler extends SimpleChannelInboundHandler<AbstractMessage> {
     private Path currentPath;
     private Path userRootPath;
+    private Path selectedCopyFile;
+    private Path selectedCutFile;
 
     public AbstractMessageHandler() {
         currentPath = Paths.get("ServerStorage");
@@ -50,7 +52,6 @@ public class AbstractMessageHandler extends SimpleChannelInboundHandler<Abstract
                     userRootPath = Paths.get(currentPath + "/" + authenticationRequest.getLogin());
                     ctx.writeAndFlush(new AuthenticationComplete(userRootPath.toString()));
                     ctx.writeAndFlush(new FilesList(userRootPath));
-                 //   ctx.writeAndFlush(new UserInfo(userRootPath.toString()));
                     break;
                 }
             case ADD_ACCOUNT:
@@ -69,7 +70,7 @@ public class AbstractMessageHandler extends SimpleChannelInboundHandler<Abstract
                     // Отправляем клиенту сообщение, что регистриция завершена.
                     ctx.writeAndFlush(new RegistrationComplete(userRootPath.toString()));
                     // Возвращаем клиент обновленный список файлов на сервере.
-                    ctx.writeAndFlush(new FilesList(userRootPath));
+                   ctx.writeAndFlush(new FilesList(userRootPath));
                 } else {
                     // Если клиент с данным логином уже существует, отправляем сообщение, что данный клиент уже
                     // существует.
@@ -103,7 +104,7 @@ public class AbstractMessageHandler extends SimpleChannelInboundHandler<Abstract
             case CREATE_FOLDER:
                 CreateFolder createFolder = (CreateFolder) message;
                 Files.createDirectory(userRootPath.resolve(createFolder.getFolderName()));
-                ctx.writeAndFlush(new FilesList(userRootPath));
+               ctx.writeAndFlush(new FilesList(userRootPath));
                 break;
             case CREATE_FILE:
                 CreateFile createFile = (CreateFile) message;
@@ -122,6 +123,25 @@ public class AbstractMessageHandler extends SimpleChannelInboundHandler<Abstract
                 Files.delete(userRootPath.resolve(del.getFileName()));
                 // Возвращаем клиенту обновленный список файлов на сервере.
                 ctx.writeAndFlush(new FilesList(userRootPath));
+                break;
+            case COPY_REQUEST:
+                CopyRequest copyRequest = (CopyRequest) message;
+                selectedCopyFile = userRootPath.resolve(copyRequest.getFileName());
+                break;
+            case PASTE_REQUEST:
+                PasteRequest pasteRequest = (PasteRequest) message;
+                if(pasteRequest.getType().equals("Copy")) {
+                    Files.copy(selectedCopyFile, userRootPath.resolve(selectedCopyFile.getFileName()), StandardCopyOption.REPLACE_EXISTING);
+                    ctx.writeAndFlush(new FilesList(userRootPath));
+                }
+                if(pasteRequest.getType().equals("Cut")) {
+                    Files.move(selectedCutFile, userRootPath.resolve(selectedCutFile.getFileName()), StandardCopyOption.REPLACE_EXISTING);
+                    ctx.writeAndFlush(new FilesList(userRootPath));
+                }
+                break;
+            case CUT_REQUEST:
+                CutRequest cutRequest = (CutRequest) message;
+                selectedCutFile = userRootPath.resolve(cutRequest.getFileName());
                 break;
                 // Если сообщение клиента является посылкой файла -->
             case FILE_MESSAGE:
