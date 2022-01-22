@@ -11,7 +11,6 @@ import javafx.stage.Stage;
 import lombok.Setter;
 import model.*;
 import java.io.IOException;
-import java.nio.file.Paths;
 
 public class RegController implements MessageProcessor {
    @FXML public TextField loginField;

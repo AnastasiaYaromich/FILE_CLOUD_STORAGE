@@ -10,8 +10,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
@@ -19,13 +17,11 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import model.*;
-import java.awt.*;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -68,7 +64,6 @@ public class MainController implements  MessageProcessor {
 
     @Override
     public void processMessage(AbstractMessage message) {
-        System.out.println(message.getMessageType());
         try {
             switch (message.getMessageType()) {
                 case FILE_MESSAGE:
@@ -96,7 +91,6 @@ public class MainController implements  MessageProcessor {
                     break;
                 case USER_INFO:
                     UserInfo info = (UserInfo) message;
-                    System.out.println(info);
                     pathServerField.setText(info.getInfo());
                     break;
                 case REFRESH_CLIENT_VIEW:

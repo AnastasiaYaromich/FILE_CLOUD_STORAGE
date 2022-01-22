@@ -18,9 +18,7 @@ public class AuthService {
            Class.forName("org.sqlite.JDBC");
            // Осуществляем инициализацию сonnection.
            connection = DriverManager.getConnection("jdbc:sqlite:main.db");
-           System.out.println(connection);
            statement = connection.createStatement();
-           System.out.println(statement);
        } catch (Exception e) {
            e.printStackTrace();
        }
